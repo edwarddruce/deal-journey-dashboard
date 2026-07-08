@@ -1,0 +1,236 @@
+.app {
+  min-height: 100vh;
+  background: #f8fafc;
+  font-family: 'Inter', system-ui, sans-serif;
+}
+
+.main {
+  padding: 20px 24px 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  max-width: 1600px;
+  margin: 0 auto;
+}
+
+/* KPI row */
+.kpiRow {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+/* Pipeline section */
+.pipelineSection {
+  background: transparent;
+}
+
+.pipelineSectionHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.aggToggle {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  font-weight: 600;
+  color: #6366f1;
+  cursor: pointer;
+  user-select: none;
+}
+.aggToggle input {
+  accent-color: #6366f1;
+  width: 13px;
+  height: 13px;
+  cursor: pointer;
+}
+
+.sectionLabel {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: #94a3b8;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+
+.pipelineGrid {
+  display: flex;
+  align-items: flex-start;
+  gap: 0;
+}
+
+.pipelineColWrap {
+  display: flex;
+  align-items: flex-start;
+  gap: 0;
+  flex: 1;
+  min-width: 0;
+}
+
+/* VAT-P and PACE stacked in a single column — no arrow between them */
+.peerStack {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex: 1;
+  min-width: 0;
+  align-items: stretch;
+}
+
+.pipelineColWrap > *:first-child {
+  flex: 1;
+  min-width: 0;
+}
+
+.arrowWrap {
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  align-self: flex-start;
+  margin-top: 33%;
+}
+
+.pipelineArrow {
+  flex-shrink: 0;
+  padding: 0 8px;
+  display: flex;
+  align-items: center;
+}
+
+/* Interactive aggregation arrow button */
+.aggArrowBtn {
+  flex-shrink: 0;
+  padding: 0 6px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  border-radius: 8px;
+  transition: background 0.15s;
+  position: relative;
+}
+.aggArrowBtn:hover {
+  background: rgba(99, 102, 241, 0.08);
+}
+.aggArrowBtn svg {
+  transition: stroke 0.15s;
+}
+.aggArrowBtn:hover svg {
+  stroke: #4f46e5;
+}
+.aggBundleBadge {
+  position: absolute;
+  top: -4px;
+  right: -2px;
+  background: #6366f1;
+  color: #fff;
+  font-size: 9px;
+  font-weight: 700;
+  min-width: 16px;
+  height: 16px;
+  padding: 0 3px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  box-shadow: 0 1px 4px rgba(99, 102, 241, 0.3);
+}
+
+/* Gap indicator badge (deals processed at A but not yet at B) */
+.gapBadge {
+  background: #ef4444;
+  color: #fff;
+  border: none;
+  border-radius: 12px;
+  padding: 3px 8px;
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  transition: background 0.15s;
+  white-space: nowrap;
+  box-shadow: 0 1px 4px rgba(239, 68, 68, 0.35);
+}
+.gapBadge:hover {
+  background: #dc2626;
+}
+
+/* Error banner */
+.errorBanner {
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  color: #dc2626;
+  padding: 10px 16px;
+  border-radius: 8px;
+  font-size: 13px;
+}
+
+/* Empty chart message */
+.emptyChart {
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 40px;
+  text-align: center;
+  color: #94a3b8;
+  font-size: 13px;
+}
+
+/* Funnel strip — below pipeline cards */
+.funnelStrip {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 12px;
+  padding: 9px 16px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  font-size: 12.5px;
+  flex-wrap: wrap;
+}
+
+.funnelNode {
+  font-weight: 700;
+  cursor: pointer;
+  text-decoration: underline;
+  text-decoration-style: dotted;
+  text-underline-offset: 2px;
+}
+.funnelNode:hover { opacity: 0.75; }
+
+.funnelPace  { color: #0891b2; }
+.funnelEndur { color: #7c3aed; }
+
+.funnelSep {
+  color: #94a3b8;
+  font-size: 14px;
+}
+
+.funnelLoss {
+  color: #b45309;
+  font-weight: 600;
+}
+.funnelLossPct {
+  margin-left: 4px;
+  font-weight: 400;
+  opacity: 0.8;
+}
+
+.funnelOk {
+  color: #059669;
+  font-weight: 600;
+}

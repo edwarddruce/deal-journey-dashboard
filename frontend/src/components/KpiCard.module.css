@@ -1,0 +1,54 @@
+.card {
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 20px 24px;
+  flex: 1;
+}
+
+.label {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  color: #94a3b8;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+
+.value {
+  font-size: 26px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.1;
+  margin-bottom: 4px;
+}
+
+.blue   { color: #3b82f6; }
+.purple { color: #7c3aed; }
+.green  { color: #10b981; }
+.orange { color: #f97316; }
+.teal   { color: #0891b2; }
+.red    { color: #ef4444; }
+
+.clickable {
+  cursor: pointer;
+  transition: box-shadow 0.12s, border-color 0.12s;
+}
+
+.clickable:hover {
+  border-color: #cbd5e1;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+.drillHint {
+  font-size: 14px;
+  opacity: 0.45;
+  margin-left: 2px;
+  vertical-align: super;
+  font-size: 12px;
+}
+
+.sub {
+  font-size: 12px;
+  color: #94a3b8;
+}

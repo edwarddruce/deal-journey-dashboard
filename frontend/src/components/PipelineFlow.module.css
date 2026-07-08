@@ -1,0 +1,48 @@
+.flow {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  padding: 10px 4px;
+}
+
+.nodeWrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.node {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 4px 12px;
+  border-radius: 999px;
+  border: 1px solid #e2e8f0;
+  background: #fff;
+  color: #0f172a;
+  letter-spacing: 0.02em;
+}
+
+.dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+}
+
+.arrow {
+  font-size: 11px;
+  color: #94a3b8;
+  letter-spacing: -2px;
+  padding: 0 4px;
+  font-family: monospace;
+}
+
+/* VAT-P and PACE rendered as a stacked pair with no arrow between them */
+.peerNodes {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+}

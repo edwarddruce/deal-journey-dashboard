@@ -1,0 +1,193 @@
+.card {
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 18px 20px;
+  flex: 1;
+  min-width: 0;
+  transition: box-shadow 0.2s;
+}
+.card.compact {
+  padding: 12px 16px;
+}
+.compact .metrics {
+  margin-bottom: 0;
+  padding-bottom: 0;
+  border-bottom: none;
+}
+.card:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.07); }
+
+.card.degraded { border-top: 3px solid #f59e0b; }
+.card.offline  { border-top: 3px solid #ef4444; }
+.card.online   { border-top: 3px solid #10b981; }
+
+/* Header */
+.cardHeader {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.systemName {
+  font-size: 15px;
+  font-weight: 700;
+  color: #0f172a;
+  margin-right: auto;
+}
+
+.chevron {
+  font-size: 10px;
+  color: #94a3b8;
+}
+
+/* Status badge */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  padding: 2px 8px;
+  border-radius: 999px;
+  border: 1px solid transparent;
+}
+.badgeDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.badge.online   { color: #10b981; border-color: #d1fae5; background: #f0fdf4; }
+.badge.degraded { color: #f59e0b; border-color: #fef3c7; background: #fffbeb; }
+.badge.offline  { color: #ef4444; border-color: #fee2e2; background: #fef2f2; }
+
+/* Metrics row */
+.metrics {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-bottom: 16px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.metricLabel {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  color: #94a3b8;
+  margin-bottom: 4px;
+  text-transform: uppercase;
+}
+
+.metricValue {
+  font-size: 20px;
+  font-weight: 700;
+  color: #0f172a;
+  font-variant-numeric: tabular-nums;
+}
+.metricValue.purple { color: #7c3aed; }
+.metricValue.teal   { color: #0891b2; }
+
+/* Error / success sub-lines */
+.errorLine {
+  display: flex;
+  gap: 6px;
+  margin-top: 3px;
+  flex-wrap: wrap;
+}
+.failed   { font-size: 11px; color: #ef4444; font-weight: 600; }
+
+.pendingLine { margin-top: 3px; }
+.pending { font-size: 11px; color: #8b5cf6; font-weight: 600; }
+
+.criticalStuckLine {
+  margin-top: 4px;
+  font-size: 11px;
+  font-weight: 700;
+  color: #dc2626;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: 4px;
+  padding: 2px 6px;
+  display: inline-block;
+}
+
+.drillable {
+  cursor: pointer;
+  text-decoration: underline;
+  text-decoration-style: dotted;
+  text-underline-offset: 2px;
+}
+.drillable:hover { opacity: 0.75; }
+
+.successRate { margin-top: 3px; }
+.rateGood { font-size: 11px; color: #10b981; font-weight: 600; }
+.rateWarn { font-size: 11px; color: #f59e0b; font-weight: 600; }
+.rateBad  { font-size: 11px; color: #ef4444; font-weight: 600; }
+
+/* Middleware */
+.mwSection { display: flex; flex-direction: column; gap: 6px; }
+
+.mwLabel {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  color: #94a3b8;
+  text-transform: uppercase;
+}
+
+.mwLabelRow {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 4px;
+}
+.mwLabelRow .mwLabel { flex: 1; margin-bottom: 0; }
+
+.mwColHdr {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: #cbd5e1;
+  text-transform: uppercase;
+  width: 56px;
+  flex-shrink: 0;
+  text-align: right;
+}
+.mwColHdrDrop { width: 48px; flex-shrink: 0; }
+
+.mwRow {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+}
+
+.mwDot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.mwDot.online   { background: #10b981; }
+.mwDot.degraded { background: #f59e0b; }
+.mwDot.offline  { background: #ef4444; }
+
+.mwName    { flex: 1; color: #475569; font-size: 11.5px; font-family: 'Courier New', Courier, monospace; }
+.mwIn      { color: #64748b; font-size: 11px; font-variant-numeric: tabular-nums; width: 56px; flex-shrink: 0; text-align: right; }
+.mwOut     { color: #64748b; font-size: 11px; font-variant-numeric: tabular-nums; width: 56px; flex-shrink: 0; text-align: right; }
+.mwDropCol { width: 48px; flex-shrink: 0; text-align: right; }
+.mwDrop    { color: #dc2626; font-weight: 600; }
+.mwDropBadge {
+  margin-left: 3px;
+  font-size: 10px;
+  color: #dc2626;
+  font-weight: 700;
+  background: #fef2f2;
+  border-radius: 3px;
+  padding: 0 3px;
+}

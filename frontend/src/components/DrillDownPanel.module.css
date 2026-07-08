@@ -1,0 +1,240 @@
+/* ── Backdrop ── */
+.backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.35);
+  z-index: 50;
+  animation: fadeIn 0.15s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+/* ── Panel ── */
+.panel {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 52vh;
+  min-height: 320px;
+  background: #fff;
+  border-top: 2px solid #e2e8f0;
+  border-radius: 12px 12px 0 0;
+  z-index: 51;
+  display: flex;
+  flex-direction: column;
+  animation: slideUp 0.2s ease;
+  box-shadow: 0 -8px 32px rgba(0, 0, 0, 0.12);
+}
+
+@keyframes slideUp {
+  from { transform: translateY(100%); }
+  to   { transform: translateY(0);    }
+}
+
+/* ── Header ── */
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 20px 10px;
+  border-bottom: 1px solid #f1f5f9;
+  flex-shrink: 0;
+}
+
+.headerLeft {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.panelTitle {
+  font-size: 13px;
+  font-weight: 700;
+  color: #1e293b;
+}
+
+.totalBadge {
+  font-size: 11px;
+  font-weight: 600;
+  background: #f1f5f9;
+  color: #64748b;
+  padding: 2px 8px;
+  border-radius: 10px;
+}
+
+.closeBtn {
+  background: none;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  width: 28px;
+  height: 28px;
+  cursor: pointer;
+  font-size: 13px;
+  color: #64748b;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.closeBtn:hover { background: #f8fafc; }
+
+/* ── Table ── */
+.tableWrap {
+  overflow: auto;
+  flex: 1;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12.5px;
+  white-space: nowrap;
+}
+
+.table th {
+  position: sticky;
+  top: 0;
+  background: #f8fafc;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: #94a3b8;
+  padding: 7px 10px;
+  text-align: left;
+  border-bottom: 1px solid #e2e8f0;
+  z-index: 1;
+}
+
+.table td {
+  padding: 7px 10px;
+  border-bottom: 1px solid #f8fafc;
+  color: #1e293b;
+  vertical-align: middle;
+}
+
+.numCol { text-align: right; font-variant-numeric: tabular-nums; }
+
+.row:hover td { background: #f8fafc; }
+
+.rowCritical td {
+  background: #fff9f9;
+}
+.rowCritical:hover td { background: #fef2f2; }
+
+/* ── Cells ── */
+.corrId {
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 11.5px;
+  color: #475569;
+  letter-spacing: 0.03em;
+}
+
+/* Delivery urgency */
+.delivOk      { color: #1e293b; }
+.delivWarn    { color: #92400e; font-weight: 600; }
+.delivCrit    { color: #991b1b; font-weight: 700; }
+.delivOverdue { color: #dc2626; font-weight: 700; }
+
+.urgencyBadge {
+  font-size: 9px;
+  font-weight: 700;
+  margin-right: 4px;
+  padding: 1px 4px;
+  border-radius: 4px;
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.minsRemaining {
+  font-size: 11px;
+  opacity: 0.7;
+}
+
+/* Status badges */
+.statusBadge {
+  font-size: 11px;
+  font-weight: 600;
+  padding: 1px 7px;
+  border-radius: 10px;
+}
+.statusProcessed { background: #d1fae5; color: #065f46; }
+.statusFailed    { background: #fee2e2; color: #991b1b; }
+.statusPending   { background: #ede9fe; color: #5b21b6; }
+.statusOther     { background: #f1f5f9; color: #64748b; }
+
+/* System badge */
+.systemBadge {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 10px;
+}
+
+/* Error cell */
+.errorCell {
+  max-width: 200px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: #dc2626;
+  font-size: 11.5px;
+}
+
+/* View button */
+.viewBtn {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 5px;
+  padding: 3px 10px;
+  font-size: 11px;
+  font-weight: 600;
+  color: #3b82f6;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.viewBtn:hover {
+  background: #eff6ff;
+  border-color: #bfdbfe;
+}
+
+/* ── Loading skeletons ── */
+.loadingRow {
+  padding: 16px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.skeleton {
+  height: 32px;
+  border-radius: 6px;
+  background: linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.4s infinite;
+}
+
+@keyframes shimmer {
+  0%   { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* ── States ── */
+.empty {
+  padding: 40px 20px;
+  text-align: center;
+  color: #94a3b8;
+  font-size: 13px;
+}
+
+.limitNote {
+  padding: 8px 20px;
+  font-size: 11px;
+  color: #94a3b8;
+  border-top: 1px solid #f1f5f9;
+  text-align: center;
+}

@@ -1,0 +1,25 @@
+# Azure Developer CLI configuration
+name: deal-journey-dashboard
+metadata:
+  template: deal-journey-dashboard@1.0.0
+
+infra:
+  provider: terraform
+  path: infra
+
+services:
+  backend:
+    project: ./backend
+    language: ts
+    host: containerapp
+    docker:
+      path: ./Dockerfile       # relative to backend/
+      context: ../             # workspace root — needed to copy db/schema.sql and frontend/
+      remoteBuild: true        # build image via ACR Tasks — no local Docker required
+
+hooks:
+  postdeploy:
+    shell: pwsh
+    run: ./infra/scripts/postdeploy.ps1
+    interactive: true
+    continueOnError: false

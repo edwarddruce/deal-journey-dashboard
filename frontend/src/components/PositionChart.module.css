@@ -1,0 +1,89 @@
+.wrapper {
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 16px 20px 12px;
+}
+
+.chartHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.chartTitle {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: #64748b;
+  text-transform: uppercase;
+}
+
+.legend {
+  display: flex;
+  gap: 16px;
+}
+
+.controls {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.horizonToggle {
+  display: flex;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.horizonBtn {
+  padding: 3px 10px;
+  font-size: 11px;
+  font-weight: 600;
+  color: #94a3b8;
+  background: #fff;
+  border: none;
+  cursor: pointer;
+  letter-spacing: 0.04em;
+}
+
+.horizonBtn:hover {
+  background: #f8fafc;
+  color: #64748b;
+}
+
+.horizonBtnActive {
+  background: #0f172a;
+  color: #fff;
+}
+
+.neonGapBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 10px;
+  background: #fef2f2;
+  border: 1px solid #fca5a5;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 700;
+  color: #dc2626;
+  white-space: nowrap;
+}
+
+.legendItem {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11px;
+  font-weight: 600;
+  color: #64748b;
+}
+
+.legendDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}

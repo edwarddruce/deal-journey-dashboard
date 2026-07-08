@@ -1,0 +1,297 @@
+.section {
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 16px 20px 20px;
+}
+
+.sectionLabel {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: #94a3b8;
+  text-transform: uppercase;
+  margin-bottom: 12px;
+}
+
+/* Search row */
+.searchRow {
+  display: flex;
+  gap: 8px;
+}
+
+.inputWrap {
+  flex: 1;
+  position: relative;
+}
+
+.input {
+  width: 100%;
+  box-sizing: border-box;
+  font-family: 'ui-monospace', 'Cascadia Code', 'Consolas', monospace;
+  font-size: 13px;
+  padding: 8px 12px;
+  border: 1px solid #e2e8f0;
+  border-radius: 7px;
+  outline: none;
+  color: #0f172a;
+  background: #f8fafc;
+  transition: border-color 0.15s;
+}
+.input:focus { border-color: #3b82f6; background: #fff; }
+
+/* Typeahead dropdown */
+.suggestions {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 7px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.10);
+  z-index: 40;
+  max-height: 240px;
+  overflow-y: auto;
+}
+
+.suggestionItem {
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: 8px 12px;
+  background: none;
+  border: none;
+  border-bottom: 1px solid #f1f5f9;
+  font-family: 'ui-monospace', 'Cascadia Code', 'Consolas', monospace;
+  font-size: 12.5px;
+  color: #334155;
+  cursor: pointer;
+}
+.suggestionItem:last-child { border-bottom: none; }
+.suggestionItem:hover { background: #f0f9ff; color: #1d4ed8; }
+
+.searchBtn {
+  padding: 8px 18px;
+  background: #3b82f6;
+  color: #fff;
+  border: none;
+  border-radius: 7px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s;
+  white-space: nowrap;
+  font-family: inherit;
+}
+.searchBtn:hover:not(:disabled) { background: #2563eb; }
+.searchBtn:disabled { background: #93c5fd; cursor: not-allowed; }
+
+/* States */
+.errorMsg {
+  margin-top: 10px;
+  font-size: 13px;
+  color: #ef4444;
+  padding: 8px 12px;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: 6px;
+}
+
+.placeholder {
+  margin-top: 16px;
+  font-size: 13px;
+  color: #94a3b8;
+  text-align: center;
+  padding: 20px;
+}
+.placeholder code {
+  background: #f1f5f9;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 12px;
+  color: #475569;
+}
+
+/* Result */
+.result {
+  margin-top: 14px;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.resultHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  padding: 12px 16px;
+  background: #f8fafc;
+  border-bottom: 1px solid #e2e8f0;
+  gap: 12px;
+}
+
+.corrId {
+  font-family: 'ui-monospace', 'Cascadia Code', 'Consolas', monospace;
+  font-size: 13px;
+  color: #0f172a;
+  font-weight: 600;
+  word-break: break-all;
+}
+
+.resultMeta {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: #64748b;
+  margin-top: 4px;
+  flex-wrap: wrap;
+}
+
+.dot { color: #cbd5e1; }
+
+/* Journey status badge */
+.journeyBadge {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  padding: 3px 10px;
+  border-radius: 999px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.journeyComplete  { background: #f0fdf4; color: #10b981; border: 1px solid #d1fae5; }
+.journeyFailed    { background: #fef2f2; color: #ef4444; border: 1px solid #fecaca; }
+.journeyInFlight  { background: #fffbeb; color: #f59e0b; border: 1px solid #fef3c7; }
+
+/* ── Delivery start banner ── */
+.deliveryBanner {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 16px;
+  border-radius: 6px;
+  margin: 8px 0 4px;
+  flex-wrap: wrap;
+}
+
+.deliveryLabel {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  opacity: 0.65;
+  text-transform: uppercase;
+}
+
+.deliveryValue {
+  font-size: 13px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.deliveryUrgency {
+  font-size: 12px;
+  font-weight: 700;
+  margin-left: auto;
+}
+
+.deliveryOk       { background: #f0fdf4; color: #065f46; }
+.deliveryNeutral  { background: #f8fafc; color: #475569; }
+.deliveryWarn     { background: #fef3c7; color: #92400e; }
+.deliveryCritical { background: #fee2e2; color: #991b1b; border: 1px solid #fca5a5; }
+.deliveryOverdue  { background: #dc2626; color: #fff; }
+
+/* Stages row */
+.stagesRow {
+  display: flex;
+  align-items: center;
+  padding: 20px 16px;
+  gap: 0;
+  overflow-x: auto;
+}
+
+.stageWrap {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.stageCol {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.lagLabel {
+  font-size: 10px;
+  color: #94a3b8;
+  font-variant-numeric: tabular-nums;
+  margin-bottom: 2px;
+}
+
+.lagWarn {
+  color: #d97706;
+  font-weight: 700;
+}
+
+.lagCritical {
+  color: #dc2626;
+  font-weight: 700;
+  background: #fef2f2;
+  border-radius: 3px;
+  padding: 1px 4px;
+  border: 1px solid #fecaca;
+}
+
+.connector {
+  margin: 0 4px;
+  display: flex;
+  align-items: center;
+}
+
+.stageNode {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 10px 14px;
+  border: 2px solid #e2e8f0;
+  border-radius: 8px;
+  min-width: 90px;
+  background: #fff;
+}
+
+/* Stage statuses */
+.stage_processed  { border-color: #10b981; background: #f0fdf4; }
+.stage_failed     { border-color: #ef4444; background: #fef2f2; }
+.stage_not_reached{ border-color: #e2e8f0; background: #f8fafc; opacity: 0.6; }
+
+.stageIcon {
+  font-size: 16px;
+  line-height: 1;
+  color: #94a3b8;
+}
+
+.stageName {
+  font-size: 11px;
+  font-weight: 700;
+  color: #0f172a;
+  letter-spacing: 0.04em;
+}
+
+.stageTime {
+  font-size: 10px;
+  color: #64748b;
+  font-variant-numeric: tabular-nums;
+}
+
+.stageError {
+  font-size: 10px;
+  color: #ef4444;
+  max-width: 90px;
+  text-align: center;
+  line-height: 1.3;
+  margin-top: 2px;
+}

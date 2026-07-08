@@ -1,0 +1,251 @@
+.wrapper {
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 16px 20px 20px;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.sectionLabel {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: #94a3b8;
+  text-transform: uppercase;
+}
+
+.summaryBadge {
+  font-size: 12px;
+  font-weight: 600;
+  padding: 3px 10px;
+  border-radius: 20px;
+}
+
+.healthGood { background: #d1fae5; color: #065f46; }
+.healthWarn { background: #fef3c7; color: #92400e; }
+.healthBad  { background: #fee2e2; color: #991b1b; }
+
+/* ── Funnel row ── */
+.funnel {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  margin-bottom: 20px;
+  overflow-x: auto;
+}
+
+.funnelSegment {
+  display: flex;
+  align-items: center;
+  flex: 1;
+  min-width: 130px;
+}
+
+/* ── System block ── */
+.systemBlock {
+  flex: 1;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 10px 12px;
+  min-width: 110px;
+}
+
+.systemHeader {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin-bottom: 6px;
+}
+
+.systemDot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.systemName {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: #475569;
+  text-transform: uppercase;
+}
+
+.dealCount {
+  font-size: 22px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.1;
+}
+
+.dealLabel {
+  font-size: 10px;
+  color: #94a3b8;
+  margin-bottom: 8px;
+}
+
+.statusBreakdown {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.pill {
+  font-size: 10px;
+  font-weight: 600;
+  padding: 1px 6px;
+  border-radius: 10px;
+}
+
+.pillProcessed { background: #d1fae5; color: #065f46; }
+.pillFailed    { background: #fee2e2; color: #991b1b; }
+.pillPending   { background: #ede9fe; color: #5b21b6; }
+
+/* ── Delta connector between systems ── */
+.connector {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex-shrink: 0;
+  width: 68px;
+  gap: 2px;
+}
+
+.connectorLine {
+  width: 100%;
+  height: 1px;
+  background: #cbd5e1;
+}
+
+.deltaChip {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  font-size: 10px;
+  font-weight: 600;
+  padding: 2px 5px;
+  border-radius: 8px;
+  white-space: nowrap;
+}
+
+.deltaArrow  { font-size: 9px; }
+.deltaCount  {}
+.deltaPct    { opacity: 0.8; }
+.deltaGainText {}
+
+.deltaGood { background: #d1fae5; color: #065f46; }
+.deltaWarn { background: #fef3c7; color: #92400e; }
+.deltaBad  { background: #fee2e2; color: #991b1b; }
+
+/* ── Detail table ── */
+.tableWrap {
+  overflow-x: auto;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.table th {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.07em;
+  color: #94a3b8;
+  text-transform: uppercase;
+  padding: 6px 8px;
+  text-align: left;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.table td {
+  padding: 7px 8px;
+  border-bottom: 1px solid #f1f5f9;
+  color: #1e293b;
+}
+
+.table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.table tbody tr:hover td {
+  background: #f8fafc;
+}
+
+.numCol {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.tableSystemDot {
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  margin-right: 6px;
+  vertical-align: middle;
+}
+
+.colProcessed { color: #059669; }
+.colFailed    { color: #dc2626; font-weight: 600; }
+.colCritical  { color: #dc2626; font-weight: 700; }
+
+.drillable {
+  cursor: pointer;
+  text-decoration: underline;
+  text-decoration-style: dotted;
+  text-underline-offset: 2px;
+}
+.drillable:hover { background: #f8fafc !important; opacity: 0.85; }
+
+/* ── System block with critical indicator ── */
+.systemBlockCritical {
+  border-color: #fca5a5;
+  background: #fff5f5;
+}
+
+.criticalBadge {
+  font-size: 9px;
+  font-weight: 700;
+  padding: 1px 5px;
+  border-radius: 8px;
+  background: #fee2e2;
+  color: #991b1b;
+  margin-left: auto;
+  white-space: nowrap;
+}
+
+.totalsRow td {
+  font-size: 11px;
+  font-weight: 700;
+  color: #475569;
+  border-top: 2px solid #e2e8f0;
+  border-bottom: none;
+  padding-top: 10px;
+  background: #f8fafc;
+}
+
+/* ── Loading skeleton ── */
+.skeleton {
+  height: 140px;
+  background: linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.4s infinite;
+  border-radius: 8px;
+}
+
+@keyframes shimmer {
+  0%   { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
