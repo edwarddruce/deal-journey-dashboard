@@ -96,9 +96,9 @@ async function tick(sysMap: Map<string, number>) {
         const existingVatpBundle = await client.query<{ agg_id: string }>(
           `SELECT agg_id FROM deal_aggregations
            WHERE stage = 'vat_p_neon' AND delivery_day = $1 AND delivery_period = $2
-             AND product = $3 AND window_start = $4
+             AND product = $3 AND counterparty = $4 AND window_start = $5
            LIMIT 1`,
-          [delivDay, deliveryPeriod, product, windowStart],
+          [delivDay, deliveryPeriod, product, counterparty, windowStart],
         );
         const vatpAggId = existingVatpBundle.rows[0]?.agg_id ?? randomUUID();
         await client.query(
@@ -219,9 +219,9 @@ async function tick(sysMap: Map<string, number>) {
           const existingBundle = await client.query<{ agg_id: string }>(
             `SELECT agg_id FROM deal_aggregations
              WHERE stage = $1 AND delivery_day = $2 AND delivery_period = $3
-               AND product = $4 AND window_start = $5
+               AND product = $4 AND counterparty = $5 AND window_start = $6
              LIMIT 1`,
-            [aggStage, delivDay, deliveryPeriod, product, windowStart],
+            [aggStage, delivDay, deliveryPeriod, product, counterparty, windowStart],
           );
 
           const aggId = existingBundle.rows[0]?.agg_id ?? randomUUID();

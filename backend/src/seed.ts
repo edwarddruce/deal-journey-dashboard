@@ -320,9 +320,8 @@ async function seed(): Promise<void> {
           // 1-minute aggregation window: truncate deal's processing time to the minute
           const procMs = new Date(row.deal_created_at).getTime();
           const minuteSlot = new Date(Math.floor(procMs / 60_000) * 60_000).toISOString();
-          // Group by: 1-hour delivery period + product + 1-minute processing window
-          // Counterparty removed from key — deals for the same product/hour bundle regardless of counterparty
-          const key = `${delivDay}||${deliveryPeriod}||${row.product}||${minuteSlot}`;
+          // Group by: 1-hour delivery period + product + counterparty + 1-minute processing window
+          const key = `${delivDay}||${deliveryPeriod}||${row.product}||${row.counterparty}||${minuteSlot}`;
           if (!groups.has(key)) groups.set(key, []);
           groups.get(key)!.push({ corrId: row.correlation_id, createdAt: row.deal_created_at, counterparty: row.counterparty });
         }
@@ -341,9 +340,7 @@ async function seed(): Promise<void> {
 
         for (const [key, items] of groups) {
           if (items.length < 2) continue;
-          const [delivDay, deliveryPeriod, product, minuteSlot] = key.split('||');
-          // Use the first deal's counterparty as the bundle's display counterparty
-          const counterparty = items[0].counterparty;
+          const [delivDay, deliveryPeriod, product, counterparty, minuteSlot] = key.split('||');
           // window_start is the 1-minute slot; dispatch time (created_at) = window_start + 60s
           const windowStart = minuteSlot;
           const dispatchTs  = new Date(new Date(minuteSlot).getTime() + 60_000).toISOString();
