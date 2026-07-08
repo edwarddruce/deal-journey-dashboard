@@ -4,10 +4,11 @@ import pool from '../db';
 const router = Router();
 
 // Window filter for deal_aggregations rows.
-// Uses window_start (1-min aggregation slot) when set; falls back to created_at
-// for older rows that pre-date the window_start column.
+// Uses created_at (= actual deal processing time stored per row) to match
+// the selected display window. window_start is the 1-hour aggregation slot
+// kept for bundle lookup, NOT for time filtering.
 function windowFilter(w: string, alias = 'da'): string {
-  const col = `COALESCE(${alias}.window_start, ${alias}.created_at)`;
+  const col = `${alias}.created_at`;
   switch (w) {
     case '1m':    return `${col} >= NOW() - INTERVAL '1 minute'`;
     case '15m':   return `${col} >= NOW() - INTERVAL '15 minutes'`;

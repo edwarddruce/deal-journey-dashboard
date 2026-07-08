@@ -237,7 +237,7 @@ export function AggregationPanel({ stage, window, onClose, onViewDeal }: Props) 
         </div>
 
         <div className={styles.explainer}>
-          Deals with the same 30-minute delivery period, product, and counterparty are grouped into
+          Deals with the same 1-hour delivery slot and product are grouped into
           aggregation bundles before being passed to <strong>{meta.to}</strong>.
           Showing bundles active in the {WINDOW_LABELS[window] ?? window}. Not all deals are bundled — unbundled deals flow individually. Click a bundle to see its deals.
         </div>

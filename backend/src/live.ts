@@ -104,7 +104,7 @@ async function tick(sysMap: Map<string, number>) {
         await client.query(
           `INSERT INTO deal_aggregations (agg_id, stage, correlation_id, delivery_day, delivery_period, product, counterparty, window_start, created_at)
            VALUES ($1,'vat_p_neon',$2,$3,$4,$5,$6,$7,$8)`,
-          [vatpAggId, corrId, delivDay, deliveryPeriod, product, counterparty, windowStart, dispatchTs],
+          [vatpAggId, corrId, delivDay, deliveryPeriod, product, counterparty, windowStart, new Date(stageTimeMs).toISOString()],
         );
         prevAggId    = vatpAggId;
         prevAggStage = 'vat_p_neon';
@@ -210,10 +210,9 @@ async function tick(sysMap: Map<string, number>) {
           // delivery_start is already snapped to 15-min boundary — use directly as the period
           const deliveryPeriod = deliveryStart;
 
-          // 1-minute aggregation window: the bundle is keyed to the minute slot of
-          // the deal's processing time at this stage.
-          const windowStart = new Date(Math.floor(stageTimeMs / 60_000) * 60_000).toISOString();
-          const dispatchTs  = new Date(Math.floor(stageTimeMs / 60_000) * 60_000 + 60_000).toISOString();
+          // 1-hour aggregation window: same as vat_p_neon — keyed to the hour slot.
+          // created_at = actual processing time so the window filter works for short display windows.
+          const windowStart = new Date(Math.floor(stageTimeMs / 3_600_000) * 3_600_000).toISOString();
 
           // Find an existing bundle for the same (hour-window × delivery-period × product).
           const existingBundle = await client.query<{ agg_id: string }>(
@@ -228,7 +227,7 @@ async function tick(sysMap: Map<string, number>) {
           await client.query(
             `INSERT INTO deal_aggregations (agg_id, stage, correlation_id, delivery_day, delivery_period, product, counterparty, window_start, created_at)
              VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9)`,
-            [aggId, aggStage, corrId, delivDay, deliveryPeriod, product, counterparty, windowStart, dispatchTs],
+            [aggId, aggStage, corrId, delivDay, deliveryPeriod, product, counterparty, windowStart, new Date(stageTimeMs).toISOString()],
           );
 
           // Track bundle membership for the next stage's fate decision

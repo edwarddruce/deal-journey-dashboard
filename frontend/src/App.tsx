@@ -173,7 +173,7 @@ export default function App() {
               const neonSys  = pipeline.find((s) => s.name === 'NEON');
               const endurSys = pipeline.find((s) => s.name === 'Endur');
 
-              return pipeline
+              return displayPipeline
                 .filter((sys) => sys.name !== 'PACE')   // PACE is rendered inside the VAT-P column
                 .map((sys) => {
                   const isPeerCol  = sys.name === 'VAT-P';

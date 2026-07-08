@@ -346,9 +346,9 @@ async function seed(): Promise<void> {
           const windowStart = hourSlot;
           const dispatchTs  = new Date(new Date(hourSlot).getTime() + 3_600_000).toISOString();
           const aggId = randomUUID();
-          for (const { corrId } of items) {
+          for (const { corrId, createdAt } of items) {
             aggRows.push(`($${ap},$${ap+1},$${ap+2},$${ap+3},$${ap+4},$${ap+5},$${ap+6},$${ap+7},$${ap+8})`);
-            aggParams.push(aggId, stage, corrId, delivDay, deliveryPeriod, product, counterparty, windowStart, dispatchTs);
+            aggParams.push(aggId, stage, corrId, delivDay, deliveryPeriod, product, counterparty, windowStart, createdAt);
             ap += 9;
             if (aggRows.length >= 300) await flushAgg();
           }

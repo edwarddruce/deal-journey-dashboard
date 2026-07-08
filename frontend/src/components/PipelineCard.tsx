@@ -68,12 +68,12 @@ export function PipelineCard({ system, reconRow, bundleMode = false, compact = f
               )}
             </div>
           )}
-          {!bundleMode && reconRow && reconRow.pending > 0 && (
+          {reconRow && reconRow.pending > 0 && (
             <div className={styles.pendingLine}>
               <span className={styles.pending}>{reconRow.pending} pending</span>
             </div>
           )}
-          {!bundleMode && reconRow && reconRow.criticalStuck > 0 && (
+          {reconRow && reconRow.criticalStuck > 0 && (
             <div
               className={`${styles.criticalStuckLine} ${onDrillDown ? styles.drillable : ''}`}
               onClick={() => drill('critical_at_risk', `⚡ Critical stuck at ${system.name}`)}
@@ -106,15 +106,19 @@ export function PipelineCard({ system, reconRow, bundleMode = false, compact = f
           <span className={styles.mwColHdrDrop} />
         </div>
         {system.middleware.map((mc) => {
-          const diff = msgDiff(mc.messagesIn, mc.messagesOut);
+          const isDlq = mc.name.endsWith('-dlq-topic');
+          // In bundle mode, replace deal-count metrics with bundle count for non-DLQ topics
+          const inVal  = bundleMode && !isDlq ? system.dealCount : mc.messagesIn;
+          const outVal = bundleMode && !isDlq ? system.dealCount : mc.messagesOut;
+          const diff = msgDiff(inVal, outVal);
           const hasDrop = diff !== null && diff.dropped > 0;
           return (
             <div key={mc.name} className={styles.mwRow}>
               <span className={`${styles.mwDot} ${styles[mc.status]}`} />
               <span className={styles.mwName}>{mc.name}</span>
-              <span className={styles.mwIn}>{fmtCount(mc.messagesIn)}</span>
+              <span className={styles.mwIn}>{fmtCount(inVal)}</span>
               <span className={`${styles.mwOut} ${hasDrop ? styles.mwDrop : ''}`}>
-                {mc.messagesOut !== mc.messagesIn ? fmtCount(mc.messagesOut) : ''}
+                {outVal !== inVal ? fmtCount(outVal) : ''}
               </span>
               <span className={styles.mwDropCol}>
                 {hasDrop && mc.messagesOut !== 0 && (
