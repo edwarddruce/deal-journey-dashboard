@@ -147,7 +147,7 @@ router.get('/bundles', async (req: Request, res: Response): Promise<void> => {
       FROM bundle_deals bd
       LEFT JOIN bundle_target bt ON bt.agg_id = bd.agg_id
       GROUP BY bd.agg_id
-      ORDER BY bd.delivery_period ASC NULLS LAST, COUNT(*) DESC
+      ORDER BY MIN(bd.delivery_period) ASC NULLS LAST, COUNT(*) DESC
       LIMIT 200
     `, [stage, targetSysName]);
 
