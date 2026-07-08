@@ -88,12 +88,11 @@ router.get('/bundles', async (req: Request, res: Response): Promise<void> => {
     return;
   }
 
-  const wf = windowFilter(w);
+  // Anchor to the target system's processing time so panel totals align with
+  // the pipeline card deal count (which also reflects target-system confirmation).
+  const wfTarget = windowFilterDeals(w, 'dj');
 
   try {
-    // Use CTE to get one row per (agg_id, correlation_id) — most recent system status.
-    // Also join the target system's deal events to derive the bundle-level status
-    // (all members share the same fate after harmonisation).
     const targetSysName = stage === 'vat_p_neon' ? 'NEON' : 'Endur';
     const bundlesRes = await pool.query<{
       agg_id: string;
@@ -106,7 +105,16 @@ router.get('/bundles', async (req: Request, res: Response): Promise<void> => {
       min_delivery: string | null;
       bundle_status: string;
     }>(`
-      WITH bundle_deals AS (
+      WITH confirmed_at_target AS (
+        -- Deals that have been processed at the target system in the window.
+        -- Using target-system time as anchor keeps panel totals consistent with
+        -- the NEON/Endur pipeline card counts.
+        SELECT DISTINCT dj.correlation_id, dj.status
+        FROM deal_journey dj
+        JOIN systems s ON s.id = dj.system_id AND s.name = $2
+        WHERE ${wfTarget}
+      ),
+      bundle_deals AS (
         SELECT DISTINCT ON (da.agg_id, da.correlation_id)
           da.agg_id,
           da.delivery_day,
@@ -116,23 +124,19 @@ router.get('/bundles', async (req: Request, res: Response): Promise<void> => {
           d.volume_mwh,
           d.delivery_start
         FROM deal_aggregations da
+        JOIN confirmed_at_target cat ON cat.correlation_id = da.correlation_id
         JOIN deals d ON d.correlation_id = da.correlation_id
         WHERE da.stage = $1
-          AND ${wf}
         ORDER BY da.agg_id, da.correlation_id, d.created_at DESC
       ),
       bundle_target AS (
-        -- Get the status of each bundle at the target system.
-        -- After harmonisation every member has the same status, so any one row suffices.
         SELECT DISTINCT ON (da.agg_id)
           da.agg_id,
-          dj.status AS bundle_status
+          cat.status AS bundle_status
         FROM deal_aggregations da
-        JOIN systems ts ON ts.name = $2
-        JOIN deal_journey dj ON dj.correlation_id = da.correlation_id AND dj.system_id = ts.id
+        JOIN confirmed_at_target cat ON cat.correlation_id = da.correlation_id
         WHERE da.stage = $1
-          AND ${wf}
-        ORDER BY da.agg_id, dj.created_at DESC
+        ORDER BY da.agg_id
       )
       SELECT
         bd.agg_id,
@@ -250,9 +254,10 @@ router.get('/individual', async (req: Request, res: Response): Promise<void> => 
     return;
   }
 
-  const sourceSystem = stage === 'vat_p_neon' ? 'VAT-P' : 'NEON';
+  // Anchor individual deals to the target system (same as bundles) so that
+  // bundled + individual = target system card count.
+  const targetSystem = stage === 'vat_p_neon' ? 'NEON' : 'Endur';
   const wfDeals = windowFilterDeals(w, 'dj');  // deal_journey uses created_at
-  const wfAgg   = windowFilter(w, 'da');       // deal_aggregations uses window_start (or created_at fallback)
 
   try {
     const candidateSql = `
@@ -271,14 +276,13 @@ router.get('/individual', async (req: Request, res: Response): Promise<void> => 
           SELECT DISTINCT da.correlation_id
           FROM deal_aggregations da
           WHERE da.stage = $2
-            AND ${wfAgg}
         )
       ORDER BY dj.correlation_id, dj.created_at DESC
     `;
 
     const countRes = await pool.query<{ total: string }>(
       `SELECT COUNT(*) AS total FROM (${candidateSql}) sub`,
-      [sourceSystem, stage],
+      [targetSystem, stage],
     );
     const total = parseInt(countRes.rows[0].total, 10);
 
@@ -288,7 +292,7 @@ router.get('/individual', async (req: Request, res: Response): Promise<void> => 
       delivery_start: string | null;
       status: string;
       system_name: string;
-    }>(`${candidateSql} LIMIT 200`, [sourceSystem, stage]);
+    }>(`${candidateSql} LIMIT 200`, [targetSystem, stage]);
 
     res.json({
       stage,
