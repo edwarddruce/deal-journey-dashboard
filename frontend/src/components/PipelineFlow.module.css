@@ -39,6 +39,22 @@
   font-family: monospace;
 }
 
+/* Arrow + bundle count wrapper */
+.arrowWrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+.bundleCount {
+  font-size: 9px;
+  font-weight: 700;
+  color: #6366f1;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+}
+
 /* VAT-P and PACE rendered as a stacked pair with no arrow between them */
 .peerNodes {
   display: flex;

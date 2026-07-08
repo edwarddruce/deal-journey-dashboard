@@ -4,13 +4,15 @@ import styles from './PipelineFlow.module.css';
 
 interface Props {
   systems: PipelineSystem[];
+  vatpToNeonBundles?: number;
+  neonToEndurBundles?: number;
 }
 
 function systemKey(name: string) {
   return name.toLowerCase().replace(/[^a-z0-9]/g, '_');
 }
 
-export function PipelineFlow({ systems }: Props) {
+export function PipelineFlow({ systems, vatpToNeonBundles, neonToEndurBundles }: Props) {
   // VAT-P and PACE are peers — render them as a stacked pair with no arrow between them.
   // All other transitions show a normal arrow.
   const paceSystem = systems.find((s) => s.name === 'PACE');
@@ -49,9 +51,20 @@ export function PipelineFlow({ systems }: Props) {
               {sys.name}
             </span>
           )}
-          {i < displaySystems.length - 1 && (
-            <span className={styles.arrow}>——&gt;</span>
-          )}
+          {i < displaySystems.length - 1 && (() => {
+            const bundleCount =
+              sys.name === 'VAT-P' ? vatpToNeonBundles :
+              sys.name === 'NEON'  ? neonToEndurBundles :
+              undefined;
+            return (
+              <span className={styles.arrowWrap}>
+                <span className={styles.arrow}>——&gt;</span>
+                {bundleCount != null && bundleCount > 0 && (
+                  <span className={styles.bundleCount}>{bundleCount.toLocaleString()} bundles</span>
+                )}
+              </span>
+            );
+          })()}
         </div>
       ))}
     </div>

@@ -228,6 +228,14 @@ export default function App() {
                                 <line x1="5" y1="12" x2="19" y2="12" />
                                 <polyline points="12 5 19 12 12 19" />
                               </svg>
+                              {(() => {
+                                const count = aggArrowStage === 'vat_p_neon'
+                                  ? aggData?.vatpToNeon.bundles
+                                  : aggData?.neonToEndur.bundles;
+                                return count != null && count > 0
+                                  ? <span className={styles.aggBundleBadge}>{count > 9999 ? '9999+' : count}</span>
+                                  : null;
+                              })()}
                             </button>
                           ) : (
                             <div className={styles.pipelineArrow}>
@@ -261,7 +269,11 @@ export default function App() {
             })()}
           </div>
 
-          <PipelineFlow systems={pipeline} />
+          <PipelineFlow
+            systems={pipeline}
+            vatpToNeonBundles={aggData?.vatpToNeon.bundles}
+            neonToEndurBundles={aggData?.neonToEndur.bundles}
+          />
 
           {/* Funnel summary — deals entering VAT-P vs reaching Endur */}
           {vatpTotal > 0 && (
