@@ -37,7 +37,11 @@ function windowFilterDeals(w: string, alias = 'dj'): string {
 // GET /api/aggregations/summary?window=10m
 router.get('/summary', async (req: Request, res: Response): Promise<void> => {
   const w = typeof req.query.window === 'string' ? req.query.window : '10m';
-  const wf = windowFilter(w);
+  // Use the same anchor as the bundles/individual endpoints and the pipeline card:
+  //   source system in window → confirmed at target system.
+  // This ensures the summary bundle counts shown on the pipeline card match the
+  // counts shown in the drill-down panel exactly.
+  const wfSrc = windowFilterDeals(w, 'src');
 
   try {
     const result = await pool.query<{
@@ -46,14 +50,47 @@ router.get('/summary', async (req: Request, res: Response): Promise<void> => {
       deals_covered: string;
       avg_bundle_size: string;
     }>(`
-      SELECT
-        stage,
-        COUNT(DISTINCT agg_id)::text                                                        AS bundle_count,
-        COUNT(*)::text                                                                       AS deals_covered,
-        ROUND(COUNT(*)::decimal / NULLIF(COUNT(DISTINCT agg_id), 0), 1)::text               AS avg_bundle_size
-      FROM deal_aggregations da
-      WHERE ${wf}
-      GROUP BY stage
+      WITH vatp_in_window AS (
+        SELECT DISTINCT src.correlation_id FROM deal_journey src
+        JOIN systems ss ON ss.id = src.system_id AND ss.name = 'VAT-P'
+        WHERE ${wfSrc}
+      ),
+      neon_in_window AS (
+        SELECT DISTINCT src.correlation_id FROM deal_journey src
+        JOIN systems ss ON ss.id = src.system_id AND ss.name = 'NEON'
+        WHERE ${wfSrc}
+      ),
+      confirmed_vatp_neon AS (
+        SELECT DISTINCT tgt.correlation_id FROM deal_journey tgt
+        JOIN systems ts ON ts.id = tgt.system_id AND ts.name = 'NEON'
+        WHERE tgt.correlation_id IN (SELECT correlation_id FROM vatp_in_window)
+      ),
+      confirmed_neon_endur AS (
+        SELECT DISTINCT tgt.correlation_id FROM deal_journey tgt
+        JOIN systems ts ON ts.id = tgt.system_id AND ts.name = 'Endur'
+        WHERE tgt.correlation_id IN (SELECT correlation_id FROM neon_in_window)
+      ),
+      agg_vatp_neon AS (
+        SELECT da.agg_id, da.correlation_id FROM deal_aggregations da
+        JOIN confirmed_vatp_neon c ON c.correlation_id = da.correlation_id
+        WHERE da.stage = 'vat_p_neon'
+      ),
+      agg_neon_endur AS (
+        SELECT da.agg_id, da.correlation_id FROM deal_aggregations da
+        JOIN confirmed_neon_endur c ON c.correlation_id = da.correlation_id
+        WHERE da.stage = 'neon_endur'
+      )
+      SELECT 'vat_p_neon'::text AS stage,
+        COUNT(DISTINCT agg_id)::text                                              AS bundle_count,
+        COUNT(*)::text                                                            AS deals_covered,
+        ROUND(COUNT(*)::decimal / NULLIF(COUNT(DISTINCT agg_id), 0), 1)::text    AS avg_bundle_size
+      FROM agg_vatp_neon
+      UNION ALL
+      SELECT 'neon_endur'::text AS stage,
+        COUNT(DISTINCT agg_id)::text                                              AS bundle_count,
+        COUNT(*)::text                                                            AS deals_covered,
+        ROUND(COUNT(*)::decimal / NULLIF(COUNT(DISTINCT agg_id), 0), 1)::text    AS avg_bundle_size
+      FROM agg_neon_endur
     `);
 
     const vatpNeon  = result.rows.find((r) => r.stage === 'vat_p_neon');
