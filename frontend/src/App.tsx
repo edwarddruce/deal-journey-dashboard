@@ -232,7 +232,7 @@ export default function App() {
                                 const count = aggArrowStage === 'vat_p_neon'
                                   ? aggData?.vatpToNeon.bundles
                                   : aggData?.neonToEndur.bundles;
-                                return count != null && count > 0
+                                return count != null && count > 0 && showAggregated
                                   ? <span className={styles.aggBundleBadge}>{count > 9999 ? '9999+' : count}</span>
                                   : null;
                               })()}
