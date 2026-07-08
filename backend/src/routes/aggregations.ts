@@ -135,17 +135,17 @@ router.get('/bundles', async (req: Request, res: Response): Promise<void> => {
       )
       SELECT
         bd.agg_id,
-        bd.delivery_day::text,
-        bd.delivery_period::text,
-        bd.product,
-        bd.counterparty,
+        MIN(bd.delivery_day)::text            AS delivery_day,
+        MIN(bd.delivery_period)::text         AS delivery_period,
+        MIN(bd.product)                       AS product,
+        MIN(bd.counterparty)                  AS counterparty,
         COUNT(*)::text                        AS deal_count,
         COALESCE(SUM(bd.volume_mwh), 0)::text AS total_mwh,
         MIN(bd.delivery_start)::text          AS min_delivery,
         COALESCE(MIN(bt.bundle_status), 'pending') AS bundle_status
       FROM bundle_deals bd
       LEFT JOIN bundle_target bt ON bt.agg_id = bd.agg_id
-      GROUP BY bd.agg_id, bd.delivery_day, bd.delivery_period, bd.product, bd.counterparty
+      GROUP BY bd.agg_id
       ORDER BY bd.delivery_period ASC NULLS LAST, COUNT(*) DESC
       LIMIT 200
     `, [stage, targetSysName]);

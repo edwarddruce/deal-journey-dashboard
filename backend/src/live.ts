@@ -91,14 +91,14 @@ async function tick(sysMap: Map<string, number>) {
         const delivDay = deliveryStart.substring(0, 10);
         // delivery_start is already snapped to 15-min boundary — use directly as the period
         const deliveryPeriod = deliveryStart;
-        const windowStart = new Date(Math.floor(stageTimeMs / 60_000) * 60_000).toISOString();
-        const dispatchTs  = new Date(Math.floor(stageTimeMs / 60_000) * 60_000 + 60_000).toISOString();
+        const windowStart = new Date(Math.floor(stageTimeMs / 3_600_000) * 3_600_000).toISOString();
+        const dispatchTs  = new Date(Math.floor(stageTimeMs / 3_600_000) * 3_600_000 + 3_600_000).toISOString();
         const existingVatpBundle = await client.query<{ agg_id: string }>(
           `SELECT agg_id FROM deal_aggregations
            WHERE stage = 'vat_p_neon' AND delivery_day = $1 AND delivery_period = $2
-             AND product = $3 AND counterparty = $4 AND window_start = $5
+             AND product = $3 AND window_start = $4
            LIMIT 1`,
-          [delivDay, deliveryPeriod, product, counterparty, windowStart],
+          [delivDay, deliveryPeriod, product, windowStart],
         );
         const vatpAggId = existingVatpBundle.rows[0]?.agg_id ?? randomUUID();
         await client.query(
@@ -215,13 +215,13 @@ async function tick(sysMap: Map<string, number>) {
           const windowStart = new Date(Math.floor(stageTimeMs / 60_000) * 60_000).toISOString();
           const dispatchTs  = new Date(Math.floor(stageTimeMs / 60_000) * 60_000 + 60_000).toISOString();
 
-          // Find an existing bundle for the same (minute-window × delivery-period × product × counterparty).
+          // Find an existing bundle for the same (hour-window × delivery-period × product).
           const existingBundle = await client.query<{ agg_id: string }>(
             `SELECT agg_id FROM deal_aggregations
              WHERE stage = $1 AND delivery_day = $2 AND delivery_period = $3
-               AND product = $4 AND counterparty = $5 AND window_start = $6
+               AND product = $4 AND window_start = $5
              LIMIT 1`,
-            [aggStage, delivDay, deliveryPeriod, product, counterparty, windowStart],
+            [aggStage, delivDay, deliveryPeriod, product, windowStart],
           );
 
           const aggId = existingBundle.rows[0]?.agg_id ?? randomUUID();

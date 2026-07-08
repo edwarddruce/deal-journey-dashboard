@@ -253,7 +253,7 @@ export function AggregationPanel({ stage, window, onClose, onViewDeal }: Props) 
           )}
           {!loadingBundles && bundles.map((b) => (
             <BundleRow
-              key={`${b.aggId}||${b.counterparty ?? ''}`}
+              key={b.aggId}
               bundle={b}
               isExpanded={expanded === b.aggId}
               deals={dealCache[b.aggId] ?? null}

@@ -317,11 +317,11 @@ async function seed(): Promise<void> {
           const delivDay = dt.toISOString().substring(0, 10);
           // delivery_start is already snapped to 1-hour boundary — use it directly as the period key
           const deliveryPeriod = row.delivery_start;
-          // 1-minute aggregation window: truncate deal's processing time to the minute
+          // 1-hour aggregation window: truncate deal's processing time to the hour
           const procMs = new Date(row.deal_created_at).getTime();
-          const minuteSlot = new Date(Math.floor(procMs / 60_000) * 60_000).toISOString();
-          // Group by: 1-hour delivery period + product + counterparty + 1-minute processing window
-          const key = `${delivDay}||${deliveryPeriod}||${row.product}||${row.counterparty}||${minuteSlot}`;
+          const hourSlot = new Date(Math.floor(procMs / 3_600_000) * 3_600_000).toISOString();
+          // Group by: delivery period + product + 1-hour processing window (counterparty excluded — deals for the same product/hour bundle regardless of counterparty)
+          const key = `${delivDay}||${deliveryPeriod}||${row.product}||${hourSlot}`;
           if (!groups.has(key)) groups.set(key, []);
           groups.get(key)!.push({ corrId: row.correlation_id, createdAt: row.deal_created_at, counterparty: row.counterparty });
         }
@@ -340,10 +340,11 @@ async function seed(): Promise<void> {
 
         for (const [key, items] of groups) {
           if (items.length < 2) continue;
-          const [delivDay, deliveryPeriod, product, counterparty, minuteSlot] = key.split('||');
-          // window_start is the 1-minute slot; dispatch time (created_at) = window_start + 60s
-          const windowStart = minuteSlot;
-          const dispatchTs  = new Date(new Date(minuteSlot).getTime() + 60_000).toISOString();
+          const [delivDay, deliveryPeriod, product, hourSlot] = key.split('||');
+          const counterparty = items[0].counterparty;
+          // window_start is the 1-hour slot; dispatch time (created_at) = window_start + 1h
+          const windowStart = hourSlot;
+          const dispatchTs  = new Date(new Date(hourSlot).getTime() + 3_600_000).toISOString();
           const aggId = randomUUID();
           for (const { corrId } of items) {
             aggRows.push(`($${ap},$${ap+1},$${ap+2},$${ap+3},$${ap+4},$${ap+5},$${ap+6},$${ap+7},$${ap+8})`);
