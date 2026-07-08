@@ -88,9 +88,12 @@ router.get('/bundles', async (req: Request, res: Response): Promise<void> => {
     return;
   }
 
-  // Anchor to the target system's processing time so panel totals align with
-  // the pipeline card deal count (which also reflects target-system confirmation).
-  const wfTarget = windowFilterDeals(w, 'dj');
+  // Use the EXACT same anchor as the pipeline card:
+  //   1. deals entering the SOURCE system (VAT-P / NEON) in the window
+  //   2. that also have a TARGET system (NEON / Endur) deal_journey row
+  // This guarantees bundled + individual = target pipeline card count with zero gap.
+  const sourceSysName = stage === 'vat_p_neon' ? 'VAT-P' : 'NEON';
+  const wfSource = windowFilterDeals(w, 'src');
 
   try {
     const targetSysName = stage === 'vat_p_neon' ? 'NEON' : 'Endur';
@@ -105,14 +108,20 @@ router.get('/bundles', async (req: Request, res: Response): Promise<void> => {
       min_delivery: string | null;
       bundle_status: string;
     }>(`
-      WITH confirmed_at_target AS (
-        -- Deals that have been processed at the target system in the window.
-        -- Using target-system time as anchor keeps panel totals consistent with
-        -- the NEON/Endur pipeline card counts.
-        SELECT DISTINCT dj.correlation_id, dj.status
-        FROM deal_journey dj
-        JOIN systems s ON s.id = dj.system_id AND s.name = $2
-        WHERE ${wfTarget}
+      WITH source_in_window AS (
+        -- Same anchor as the pipeline card: deals entering the source system in the window
+        SELECT DISTINCT src.correlation_id
+        FROM deal_journey src
+        JOIN systems ss ON ss.id = src.system_id AND ss.name = $3
+        WHERE ${wfSource}
+      ),
+      confirmed_at_target AS (
+        -- Of those, deals confirmed at the target system (regardless of when target processed them).
+        -- This is the identical population the pipeline card counts for NEON/Endur.
+        SELECT DISTINCT tgt.correlation_id, tgt.status
+        FROM deal_journey tgt
+        JOIN systems ts ON ts.id = tgt.system_id AND ts.name = $2
+        WHERE tgt.correlation_id IN (SELECT correlation_id FROM source_in_window)
       ),
       bundle_deals AS (
         SELECT DISTINCT ON (da.agg_id, da.correlation_id)
@@ -153,7 +162,7 @@ router.get('/bundles', async (req: Request, res: Response): Promise<void> => {
       GROUP BY bd.agg_id
       ORDER BY MIN(bd.delivery_period) ASC NULLS LAST, COUNT(*) DESC
       LIMIT 200
-    `, [stage, targetSysName]);
+    `, [stage, targetSysName, sourceSysName]);
 
     res.json({
       stage,
@@ -254,35 +263,41 @@ router.get('/individual', async (req: Request, res: Response): Promise<void> => 
     return;
   }
 
-  // Anchor individual deals to the target system (same as bundles) so that
-  // bundled + individual = target system card count.
-  const targetSystem = stage === 'vat_p_neon' ? 'NEON' : 'Endur';
-  const wfDeals = windowFilterDeals(w, 'dj');  // deal_journey uses created_at
+  // Same anchor as bundles and pipeline card: source system in window → confirmed at target.
+  const sourceSysName = stage === 'vat_p_neon' ? 'VAT-P' : 'NEON';
+  const targetSystem  = stage === 'vat_p_neon' ? 'NEON'  : 'Endur';
+  const wfSource = windowFilterDeals(w, 'src');  // filter on source system's created_at
 
   try {
     const candidateSql = `
-      SELECT DISTINCT ON (dj.correlation_id)
-        dj.correlation_id,
+      WITH source_in_window AS (
+        SELECT DISTINCT src.correlation_id
+        FROM deal_journey src
+        JOIN systems ss ON ss.id = src.system_id AND ss.name = $3
+        WHERE ${wfSource}
+      )
+      SELECT DISTINCT ON (tgt.correlation_id)
+        tgt.correlation_id,
         d.volume_mwh::text,
         d.delivery_start::text,
-        dj.status,
-        s.name AS system_name
-      FROM deal_journey dj
-      JOIN deals d ON d.correlation_id = dj.correlation_id
-      JOIN systems s ON s.id = dj.system_id
-      WHERE s.name = $1
-        AND ${wfDeals}
-        AND dj.correlation_id NOT IN (
+        tgt.status,
+        ts.name AS system_name
+      FROM deal_journey tgt
+      JOIN deals d ON d.correlation_id = tgt.correlation_id
+      JOIN systems ts ON ts.id = tgt.system_id
+      WHERE ts.name = $1
+        AND tgt.correlation_id IN (SELECT correlation_id FROM source_in_window)
+        AND tgt.correlation_id NOT IN (
           SELECT DISTINCT da.correlation_id
           FROM deal_aggregations da
           WHERE da.stage = $2
         )
-      ORDER BY dj.correlation_id, dj.created_at DESC
+      ORDER BY tgt.correlation_id, tgt.created_at DESC
     `;
 
     const countRes = await pool.query<{ total: string }>(
       `SELECT COUNT(*) AS total FROM (${candidateSql}) sub`,
-      [targetSystem, stage],
+      [targetSystem, stage, sourceSysName],
     );
     const total = parseInt(countRes.rows[0].total, 10);
 
@@ -292,7 +307,7 @@ router.get('/individual', async (req: Request, res: Response): Promise<void> => 
       delivery_start: string | null;
       status: string;
       system_name: string;
-    }>(`${candidateSql} LIMIT 200`, [targetSystem, stage]);
+    }>(`${candidateSql} LIMIT 200`, [targetSystem, stage, sourceSysName]);
 
     res.json({
       stage,
